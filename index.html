@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>belegstack — Belege per Chat erfassen, GoBD-konform archiviert, DATEV-fertig</title>
+<meta name="description" content="Beleg fotografieren, per Sprachnotiz korrigieren, fertig gebucht: belegstack liest deine Belege mit KI aus, archiviert GoBD-konform und liefert den DATEV-Export für deine Steuerberatung.">
+<style>
+  :root {
+    --bg: #ffffff; --fg: #1a1d21; --muted: #5a6472; --line: #e6e9ed;
+    --brand: #0f6e5c; --brand-ink: #ffffff; --card: #f6f8f9; --accent: #eef7f4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #101418; --fg: #e8ebee; --muted: #9aa4af; --line: #262c33;
+      --brand: #2fbf9f; --brand-ink: #08211c; --card: #171c22; --accent: #14211e;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 1.25rem; }
+  header.site { display: flex; align-items: center; justify-content: space-between; padding: 1.1rem 0; }
+  .logo { font-weight: 750; font-size: 1.15rem; letter-spacing: -0.01em; }
+  .logo span { color: var(--brand); }
+  nav a { color: var(--muted); text-decoration: none; margin-left: 1.1rem; font-size: .95rem; }
+  nav a:hover { color: var(--fg); }
+
+  .hero { padding: 3.5rem 0 3rem; }
+  .hero h1 { font-size: clamp(1.9rem, 4.5vw, 2.9rem); line-height: 1.15; letter-spacing: -0.02em; max-width: 21ch; }
+  .hero h1 em { font-style: normal; color: var(--brand); }
+  .hero p.lead { margin: 1.1rem 0 1.8rem; color: var(--muted); font-size: 1.12rem; max-width: 56ch; }
+  .cta-row { display: flex; gap: .75rem; flex-wrap: wrap; align-items: center; }
+  .btn {
+    display: inline-block; padding: .8rem 1.35rem; border-radius: 10px; text-decoration: none;
+    font-weight: 650; font-size: 1rem; border: 1px solid transparent;
+  }
+  .btn-primary { background: var(--brand); color: var(--brand-ink); }
+  .btn-primary:hover { filter: brightness(1.08); }
+  .btn-ghost { border-color: var(--line); color: var(--fg); }
+  .btn-ghost:hover { background: var(--card); }
+  .hint { color: var(--muted); font-size: .88rem; margin-top: .8rem; }
+
+  .chatdemo {
+    margin: 2.6rem 0 0; border: 1px solid var(--line); border-radius: 14px; background: var(--card);
+    padding: 1.1rem 1.2rem; max-width: 620px; font-size: .95rem;
+  }
+  .chatdemo .msg { padding: .55rem .8rem; border-radius: 10px; margin: .45rem 0; max-width: 92%; }
+  .chatdemo .in  { background: var(--accent); }
+  .chatdemo .out { background: var(--bg); border: 1px solid var(--line); margin-left: auto; text-align: right; }
+  .chatdemo .meta { color: var(--muted); font-size: .8rem; }
+
+  section { padding: 2.8rem 0; border-top: 1px solid var(--line); }
+  section h2 { font-size: 1.55rem; letter-spacing: -0.015em; margin-bottom: .5rem; }
+  section p.sub { color: var(--muted); max-width: 60ch; margin-bottom: 1.6rem; }
+  .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 1.1rem 1.2rem; }
+  .card h3 { font-size: 1.02rem; margin-bottom: .35rem; }
+  .card p { color: var(--muted); font-size: .93rem; }
+  .step-nr { display: inline-flex; width: 1.7rem; height: 1.7rem; border-radius: 50%; background: var(--brand);
+             color: var(--brand-ink); font-weight: 700; font-size: .9rem; align-items: center; justify-content: center; margin-bottom: .6rem; }
+
+  ul.checks { list-style: none; padding: 0; display: grid; gap: .55rem; max-width: 62ch; }
+  ul.checks li { padding-left: 1.6rem; position: relative; }
+  ul.checks li::before { content: "✓"; position: absolute; left: 0; color: var(--brand); font-weight: 800; }
+
+  .price { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 1.6rem; max-width: 460px; }
+  .price .amount { font-size: 2rem; font-weight: 750; }
+  .price .amount small { font-size: 1rem; color: var(--muted); font-weight: 400; }
+
+  footer { border-top: 1px solid var(--line); padding: 2rem 0 2.6rem; color: var(--muted); font-size: .9rem; }
+  footer a { color: var(--muted); }
+  details { margin: .4rem 0; }
+  details summary { cursor: pointer; font-weight: 600; }
+  details p { color: var(--muted); margin: .4rem 0 .2rem 1.1rem; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="site">
+    <div class="logo">beleg<span>stack</span></div>
+    <nav>
+      <a href="#ablauf">So funktioniert’s</a>
+      <a href="#belegarten">Belegarten</a>
+      <a href="#gobd">GoBD &amp; DATEV</a>
+      <a href="#preis">Preis</a>
+    </nav>
+  </header>
+
+  <section class="hero" style="border-top:none">
+    <h1>Beleg fotografieren.<br><em>Fertig gebucht.</em></h1>
+    <p class="lead">
+      Schick deinen Beleg einfach per Chat — als Foto, PDF oder mit einer Sprachnotiz dazu.
+      Die KI liest Betrag, Datum, Händler und Steuersatz aus, du bestätigst mit einem Tap.
+      Archiviert wird GoBD-konform, gebucht nach SKR03, exportiert im DATEV-Format für deine Steuerberatung.
+    </p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="https://t.me/Manuels_Belege_bot?start=trial">📸 Jetzt im Telegram testen</a>
+      <a class="btn btn-ghost" href="mailto:ki@go-institut.com?subject=belegstack%20Pilotzugang">Pilotzugang anfragen</a>
+    </div>
+    <p class="hint">Kein Login, keine App-Installation — dein Messenger ist die App.</p>
+
+    <div class="chatdemo" aria-label="Beispiel-Chat">
+      <div class="msg out">📷 <em>Foto: Bewirtungsbeleg Taverne …</em></div>
+      <div class="msg in">📸 Erkannt: <strong>52,00&nbsp;€</strong> · 18.06. · Bewirtung · Kreditkarte<br>
+        <span class="meta">❓ Bitte kurz checken: Wie bezahlt? Wer war dabei?</span></div>
+      <div class="msg out">🎤 „Barbeleg. Dabei waren A.&nbsp;Kleeblatt und M.&nbsp;Gollner, Projektabschluss. Kunde Kulturstiftung.“</div>
+      <div class="msg in">✏️ Übernommen: Zahlungsart, Teilnehmer, Anlass, Kunde.<br>
+        <span class="meta">✅ Gebucht &amp; GoBD-archiviert (Nr. 128)</span></div>
+    </div>
+  </section>
+
+  <section id="ablauf">
+    <h2>So funktioniert’s</h2>
+    <p class="sub">Drei Schritte — mehr ist es nicht. Alles Weitere (OCR, Konten, Archiv, Buchung) passiert automatisch im Hintergrund.</p>
+    <div class="grid">
+      <div class="card"><span class="step-nr">1</span>
+        <h3>Schicken</h3>
+        <p>Foto, PDF-Weiterleitung oder Sprachnotiz an den belegstack-Chat. Auch Rechnungen aus E-Mails — einfach forwarden.</p>
+      </div>
+      <div class="card"><span class="step-nr">2</span>
+        <h3>Bestätigen</h3>
+        <p>Die KI liest alles aus und stellt dir 3–5 gezielte Kontrollfragen. Korrekturen sagst du einfach — per Text oder Sprache.</p>
+      </div>
+      <div class="card"><span class="step-nr">3</span>
+        <h3>Fertig</h3>
+        <p>GoBD-Archiv, SKR03-Buchung, Kunden-Zuordnung und Weiterverrechnung — und am Monatsende der DATEV-Export an die Steuerberatung.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="belegarten">
+    <h2>Alle Belegarten, steuerlich sauber</h2>
+    <p class="sub">belegstack kennt die gesetzlichen Pflichtangaben je Belegart und fragt genau das nach, was fehlt — nicht mehr.</p>
+    <div class="grid">
+      <div class="card"><h3>🧾 Kleinbetrag (≤ 250 €)</h3><p>Kassenbon &amp; Quittung nach §33 UStDV — Händler, Datum, Leistung, Brutto + Steuersatz.</p></div>
+      <div class="card"><h3>📄 Rechnung (&gt; 250 €)</h3><p>Vollrechnung nach §14 UStG — inkl. Empfänger, Steuernummer, Rechnungsnummer, Leistungsdatum.</p></div>
+      <div class="card"><h3>🍽️ Bewirtung</h3><p>Teilnehmer, Anlass, Ort und Unterschrift — geführt abgefragt, wie es §4 Abs. 5 EStG verlangt.</p></div>
+      <div class="card"><h3>✍️ Eigenbeleg</h3><p>Kein Original? Geführter Ersatzbeleg mit Grund und digitaler Signatur, GoBD-dokumentiert.</p></div>
+    </div>
+    <p class="hint" style="margin-top:1rem">Eine Belegart fehlt dir? Sag’s dem Bot per /feedback — Wünsche fließen direkt in die Entwicklung.</p>
+  </section>
+
+  <section id="gobd">
+    <h2>GoBD-Archiv &amp; DATEV-Export eingebaut</h2>
+    <p class="sub">belegstack ist kein Foto-Ordner, sondern ein Buchführungs-Werkzeug:</p>
+    <ul class="checks">
+      <li><strong>Unveränderbar archiviert:</strong> jede Datei schreibgeschützt mit SHA-256-Prüfsumme, jede Korrektur im Audit-Log — 8 Jahre Aufbewahrung (§147 AO).</li>
+      <li><strong>Dubletten-Schutz:</strong> doppelt eingereichte Belege werden erkannt, bevor sie doppelt gebucht werden.</li>
+      <li><strong>SKR03-Kontierung:</strong> Buchungsvorschläge je Kategorie, offene Posten und Zahlungsabgleich inklusive.</li>
+      <li><strong>Kunden-Zuordnung &amp; Weiterverrechnung:</strong> pro Beleg — für die Frage „was kann ich weiterberechnen?“.</li>
+      <li><strong>DATEV-Export (EXTF-Buchungsstapel):</strong> das Format, das deine Steuerberatung direkt einspielen kann.</li>
+      <li><strong>Vorsteuer &amp; Steuerersparnis</strong> auf einen Blick im Wochen- und Monatsreport.</li>
+    </ul>
+  </section>
+
+  <section id="preis">
+    <h2>Preis</h2>
+    <p class="sub">belegstack ist aktuell in der Pilotphase — mit persönlicher Einrichtung und direktem Draht zur Entwicklung.</p>
+    <div class="price">
+      <div class="amount">Pilotphase <small>— Preis auf Anfrage</small></div>
+      <p style="color:var(--muted); margin:.6rem 0 1rem">Eigene Instanz (deine Daten bleiben deine), Onboarding inklusive, monatlich kündbar.</p>
+      <a class="btn btn-primary" href="mailto:ki@go-institut.com?subject=belegstack%20Pilotzugang">Pilotzugang anfragen</a>
+    </div>
+  </section>
+
+  <section>
+    <h2>Häufige Fragen</h2>
+    <details><summary>Brauche ich eine eigene App?</summary>
+      <p>Nein. Du nutzt Telegram (weitere Messenger folgen). Für den Rechner kommt ein Web-Portal — bis dahin geht alles im Chat.</p></details>
+    <details><summary>Wo liegen meine Daten?</summary>
+      <p>In deiner eigenen belegstack-Instanz auf einem Server in der EU — getrennt von anderen Kunden, mit täglichem Backup.</p></details>
+    <details><summary>Muss ich Papierbelege trotzdem aufheben?</summary>
+      <p>belegstack archiviert GoBD-konform digital. Für bestimmte Originale gilt weiter Aufbewahrungspflicht — der Bot sagt dir per /aufbewahrung genau, was gilt.</p></details>
+    <details><summary>Wie kommen Rechnungen aus E-Mails rein?</summary>
+      <p>Weiterleiten an deine persönliche belege@-Adresse oder das PDF direkt in den Chat forwarden — beides landet im selben Prüf-Flow.</p></details>
+  </section>
+
+  <footer>
+    <div>belegstack · ein Produkt des GO Institut · <a href="mailto:ki@go-institut.com">ki@go-institut.com</a></div>
+    <div style="margin-top:.4rem"><a href="impressum.html">Impressum &amp; Datenschutz</a></div>
+  </footer>
+</div>
+
+</body>
+</html>
