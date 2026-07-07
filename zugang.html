@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Login &amp; Zugang — belegstack</title>
+<meta name="robots" content="noindex">
+<style>
+  :root { --bg:#fff; --fg:#1a1d21; --muted:#5a6472; --line:#e6e9ed; --brand:#0f6e5c; --card:#f6f8f9; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#101418; --fg:#e8ebee; --muted:#9aa4af; --line:#262c33; --brand:#2fbf9f; --card:#171c22; }
+  }
+  * { box-sizing:border-box; margin:0 }
+  body { background:var(--bg); color:var(--fg); font:17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  .wrap { max-width:840px; margin:0 auto; padding:1.5rem 1.25rem 4rem }
+  h1 { font-size:1.7rem; margin:.6rem 0 } h2 { font-size:1.25rem; margin:2rem 0 .6rem }
+  p { color:var(--muted); margin:.4rem 0 }
+  a { color:var(--brand) }
+  .hinweis { border:1px solid var(--line); background:var(--card); border-radius:10px; padding:.8rem 1rem; margin:1rem 0; font-size:.95rem }
+  .grid { display:grid; gap:1rem; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); margin-top:.8rem }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:1rem 1.1rem }
+  .card h3 { font-size:1rem; margin-bottom:.3rem }
+  .card p { font-size:.9rem }
+  .btn { display:inline-block; margin-top:.6rem; padding:.5rem .9rem; border-radius:8px; background:var(--brand); color:#fff; text-decoration:none; font-weight:600; font-size:.9rem }
+  ol { color:var(--muted); padding-left:1.3rem } ol li { margin:.35rem 0 }
+  code { background:var(--card); border:1px solid var(--line); border-radius:5px; padding:.08rem .4rem; font-size:.86em }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p><a href="index.html">← belegstack</a></p>
+  <h1>Login &amp; Zugang</h1>
+  <p>Die Erfassungs- und Buchhaltungs-Oberflächen laufen in unserem privaten Netz (Tailscale-VPN) — nichts davon ist öffentlich im Internet. Der Chat-Bot funktioniert immer und überall ohne VPN.</p>
+
+  <div class="hinweis">🔐 <strong>Voraussetzung für alle Links unten:</strong> Tailscale ist auf deinem Gerät installiert und mit dem belegstack-Netz verbunden. Zugangsdaten bekommst du beim Onboarding.</div>
+
+  <h2>Web-Oberflächen</h2>
+  <div class="grid">
+    <div class="card"><h3>🧾 belegstack-Portal <em style="font-style:normal;font-size:.8em;color:var(--brand)">NEU</em></h3>
+      <p>Belege hochladen, Liste &amp; Woche, fehlende Abbuchungen, Feedback — mit SSO-Login. Am Handy „Zum Startbildschirm hinzufügen“ = App.</p>
+      <a class="btn" href="http://freebot.tail0bd577.ts.net:8085">Portal öffnen</a></div>
+    <div class="card"><h3>📥 Paperless — Belegarchiv</h3>
+      <p>Hochladen, suchen, Felder &amp; Tags bearbeiten. Das GoBD-Archiv hinter allem.</p>
+      <a class="btn" href="http://freebot.tail0bd577.ts.net:8090">Paperless öffnen</a></div>
+    <div class="card"><h3>🤖 paperless-ai — KI-Klassifizierung</h3>
+      <p>Steuert das automatische Auslesen &amp; Taggen (Admin-Werkzeug, eigener Login).</p>
+      <a class="btn" href="http://freebot.tail0bd577.ts.net:8001">paperless-ai öffnen</a></div>
+    <div class="card"><h3>💰 Firefly — Buchhaltung</h3>
+      <p>Buchungen, offene Posten, Auswertungen nach Konto und Kunden-Tag.</p>
+      <a class="btn" href="http://freebot.tail0bd577.ts.net:8081">Firefly öffnen</a></div>
+    <div class="card"><h3>🧭 Homarr — Übersicht</h3>
+      <p>Das Board „Buchhaltung“ mit allen Diensten und Status auf einen Blick.</p>
+      <a class="btn" href="http://freebot.tail0bd577.ts.net:7575">Homarr öffnen</a></div>
+  </div>
+  <p style="margin-top:.8rem">Anmeldung: zentral über <strong>belegstack-SSO</strong> (Casdoor) oder mit deinem lokalen Konto — beides funktioniert.</p>
+
+  <h2 id="mobile">📱 Paperless Mobile einrichten (Handy-Scan ins Archiv)</h2>
+  <ol>
+    <li><strong>Tailscale-App</strong> installieren (<a href="https://tailscale.com/download">tailscale.com/download</a>) und mit dem belegstack-Netz anmelden.</li>
+    <li>App installieren: <a href="https://play.google.com/store/apps/details?id=de.astubenbord.paperless_mobile">Paperless Mobile (Android)</a> oder <a href="https://apps.apple.com/app/swift-paperless/id6448698521">Swift Paperless (iOS)</a>.</li>
+    <li>Server-URL eintragen: <code>http://freebot.tail0bd577.ts.net:8090</code></li>
+    <li>Mit deinen Paperless-Zugangsdaten anmelden — fertig. Jeder Scan landet im Archiv und durchläuft die KI-Klassifizierung.</li>
+  </ol>
+
+  <h2>💬 Chat-Bot (ohne VPN, von überall)</h2>
+  <p>Telegram: <a href="https://t.me/Manuels_Belege_bot">@Manuels_Belege_bot</a> — Foto/PDF/Sprachnotiz senden, /hilfe zeigt alles Weitere.</p>
+
+  <p style="margin-top:2rem"><a href="index.html">← zurück zur Startseite</a> · <a href="impressum.html">Impressum</a></p>
+</div>
+</body>
+</html>
